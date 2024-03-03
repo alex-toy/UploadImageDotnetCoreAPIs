@@ -517,3 +517,4 @@ yarn-error.log*
 next-env.d.ts
 /frontend/web-app/.next
 Migrations
+Uploads

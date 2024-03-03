@@ -3,6 +3,7 @@ using Microsoft.Extensions.FileProviders;
 using ProductApi.Repo;
 using ProductApi.Repository.Files;
 using ProductApi.Repository.Products;
+using ProductApi.Services.Files;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
