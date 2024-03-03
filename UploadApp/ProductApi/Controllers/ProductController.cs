@@ -4,6 +4,7 @@ using ProductApi.Models;
 using ProductApi.Models.Enums;
 using ProductApi.Repository.Files;
 using ProductApi.Repository.Products;
+using ProductApi.Services.Files;
 
 namespace ProductMiniApi.Controllers
 {
@@ -21,13 +22,13 @@ namespace ProductMiniApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add([FromForm]Product model)
+        public IActionResult Add([FromForm] Product model)
         {
-            if (!ModelState.IsValid) return Ok(new StatusDto() { StatusCode = (int)UploadStatusCode.Error, Message = "invalid data"});
+            if (!ModelState.IsValid) return Ok(new StatusDto() { StatusCode = (int)UploadStatusCode.Error, Message = "invalid data" });
 
             if (model.ImageFile is null) return Ok(new StatusDto() { StatusCode = (int)UploadStatusCode.Error, Message = "no image" });
 
-            StatusDto status =  _fileService.SaveImage(model.ImageFile);
+            StatusDto status = _fileService.SaveImage(model.ImageFile);
             if (status.StatusCode == (int)UploadStatusCode.AddedSuccessfully)
             {
                 model.ProductImage = status.Message;
@@ -35,11 +36,24 @@ namespace ProductMiniApi.Controllers
 
             bool isSuccess = _productRepo.Add(model);
 
-            status = isSuccess 
-                ? new StatusDto() { StatusCode = (int)UploadStatusCode.AddedSuccessfully, Message = "Added successfully" } 
+            status = isSuccess
+                ? new StatusDto() { StatusCode = (int)UploadStatusCode.AddedSuccessfully, Message = "Added successfully" }
                 : new StatusDto() { StatusCode = (int)UploadStatusCode.Error, Message = "Error on adding product" };
+
+            return Ok(status);
+        }
+
+        [HttpPost]
+        public IActionResult Delete([FromForm] string imageFileName)
+        {
+            bool isSuccess = _fileService.DeleteImage(imageFileName);
+
+            StatusDto status = isSuccess
+                ? new StatusDto() { StatusCode = (int)UploadStatusCode.DeletedSuccessfully, Message = "Deleted successfully" }
+                : new StatusDto() { StatusCode = (int)UploadStatusCode.Error, Message = "Error on deleting image product" };
 
             return Ok(status);
         }
     }
 }
+

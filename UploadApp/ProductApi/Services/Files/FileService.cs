@@ -46,14 +46,13 @@ public class FileService : IFileService
     {
         try
         {
-            var wwwPath = environment.WebRootPath;
-            var path = Path.Combine(wwwPath, "Uploads\\", imageFileName);
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-                return true;
-            }
-            return false;
+            string contentPath = environment.ContentRootPath;
+            string path = Path.Combine(contentPath, "Uploads\\", imageFileName);
+
+            if (!File.Exists(path))  return false;
+
+            File.Delete(path);
+            return true;
         }
         catch (Exception ex)
         {
